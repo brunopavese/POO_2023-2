@@ -1,52 +1,48 @@
 public class Robot28 {
   private String DRE = "116049102";
   private String nome = "Bruno Pavese";
-  private String estado = "GO_CENTER";
-  public int id, lr, cr, centerC, centerL, previousC, previousL;
+  private String estado = "STOP";
+  private Move[] moves = { Move.DOWN, Move.LEFT, Move.UP, Move.RIGHT };
+  private int i = 0;
+  public int id, lr, cr, centerL, centerC, previousL, previousC, maxL, maxC;
   public GPS gps;
 
   public Robot28(int id, GPS gps) {
     this.id = id;
     this.gps = gps;
-
-    System.out.println("C: " + gps.getC(id));
-    goCenter();
-
   }
 
   private void goCenter() {
-    System.out.println("centerC: " + centerC);
-
-    lr = gps.getL(this.id);
-    cr = gps.getC(this.id);
     while (centerL != lr || centerC != cr) {
       if (lr != centerL) {
         if (lr != previousL && centerL == 0) {
           previousL = lr;
-          this.gps.move(Move.DOWN);
+          gps.move(Move.DOWN);
         } else {
+          maxL = previousL;
           centerL = previousL / 2 + 1;
-          this.gps.move(Move.UP);
+          gps.move(Move.UP);
         }
       } else if (cr != centerC) {
         if (cr != previousC && centerC == 0) {
           previousC = cr;
-          this.gps.move(Move.RIGHT);
+          gps.move(Move.RIGHT);
         } else {
+          maxC = previousC;
           centerC = previousC / 2 + 1;
-          this.gps.move(Move.LEFT);
+          gps.move(Move.LEFT);
         }
       }
-      lr = gps.getL(this.id);
-      cr = gps.getC(this.id);
+      lr = gps.getL(id);
+      cr = gps.getC(id);
     }
-    System.out.println("centerC: " + centerC);
   }
 
   public Move MOVE() {
+    lr = gps.getL(id);
+    cr = gps.getC(id);
+
     Move move = Move.DOWN;
-    lr = gps.getL(this.id);
-    cr = gps.getC(this.id);
 
     switch (estado) {
       case ("STOP"):
@@ -54,38 +50,37 @@ public class Robot28 {
         break;
 
       case ("GO_CENTER"):
-        if (lr == centerL && cr == centerC) {
-          estado = "STOP";
-          System.out.println("l:" + lr + "  c:" + cr);
-          move = Move.STOP;
-        } else if (lr != centerL) {
-          if (lr != previousL && centerL == 0) {
-            previousL = lr;
-          } else {
-            centerL = previousL / 2 + 1;
-            move = Move.UP;
-          }
-        } else if (cr != centerC) {
-          if (cr != previousC && centerC == 0) {
-            previousC = cr;
-            move = Move.RIGHT;
-          } else {
-            centerC = previousC / 2 + 1;
-            move = Move.LEFT;
-          }
-        }
+        goCenter();
+        estado = "STOP";
+        move = Move.STOP;
         break;
 
       case ("CLOCKWISE"):
-        if (lr != previousL) {
-          previousL = lr;
+        if (lr == previousL && cr == previousC) {
+          i = (i + 1) % moves.length;
         } else {
-          move = Move.LEFT;
+          previousC = cr;
+          previousL = lr;
         }
+        move = moves[i];
+        break;
+
+      case ("COUNTER_CW"):
+        if (lr == previousL && cr == previousC) {
+          i--;
+          if (i < 0) {
+            i = moves.length - 1;
+          }
+        } else {
+          previousC = cr;
+          previousL = lr;
+        }
+        move = moves[i];
         break;
     }
 
-    System.out.println("l:" + lr + "  c:" + cr);
+    System.out.println("\nl:" + lr + "  c:" + cr);
+    System.out.println("move: " + move);
     return move;
   }
 
