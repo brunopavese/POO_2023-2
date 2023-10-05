@@ -2,8 +2,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Pessoa {
-  public String nome;
-  public int id;
+  private String nome;
+  private int id;
   private static Set<Integer> idsUsados = new HashSet<>();
 
   public Pessoa(String nome, int id) {

@@ -1,13 +1,14 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 public class Evento {
   public String descricao;
   public int id, ocorrencia;
-  public Pessoa[] pessoasCadastradas = new Pessoa[0];
+  public ArrayList<Pessoa> pessoasCadastradas = new ArrayList<>();
   private static Set<Integer> idsUsados = new HashSet<>();
 
-  public Evento(String descricao, int id, Pessoa[] pessoasCadastradas) {
+  public Evento(String descricao, int id, ArrayList<Pessoa> pessoasCadastradas) {
     if (idsUsados.contains(id)) {
       throw new IllegalArgumentException("ID já está em uso.");
     }
