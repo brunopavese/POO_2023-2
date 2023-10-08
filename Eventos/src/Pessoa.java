@@ -9,6 +9,8 @@ public class Pessoa {
   public Pessoa(String nome, int id) {
     if (idsUsados.contains(id)) {
       throw new IllegalArgumentException("ID já está em uso.");
+    } else if (id <= 0) {
+      throw new IllegalArgumentException("ID inválido.");
     }
     this.nome = nome;
     this.id = id;
